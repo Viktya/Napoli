@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
@@ -8,11 +11,12 @@ using UnityEngine;
 public class CharacterController2D : MonoBehaviour
 {
     // Move player in 2D space
-    public float maxSpeed = 3.4f;
-    public float jumpHeight = 6.5f;
-    public float gravityScale = 1.5f;
+    public float maxSpeed = 5f;
+    public float jumpHeight = 12f;
+    public float gravityScale = 4f;
     public Camera mainCamera;
 
+    bool sulcerchio = false;
     bool facingRight = true;
     float moveDirection = 0;
     bool isGrounded = false;
@@ -43,9 +47,9 @@ public class CharacterController2D : MonoBehaviour
     void Update()
     {
         // Movement controls
-        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && (isGrounded || r2d.velocity.x > 0.01f))
+        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) || (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) && (isGrounded || r2d.velocity.x > 0.01f))
         {
-            moveDirection = Input.GetKey(KeyCode.A) ? -1 : 1;
+            moveDirection = (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) ? -1 : 1;
         }
         else
         {
@@ -71,9 +75,26 @@ public class CharacterController2D : MonoBehaviour
         }
 
         // Jumping
-        if (Input.GetKeyDown(KeyCode.W) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && isGrounded || sulcerchio)
         {
             r2d.velocity = new Vector2(r2d.velocity.x, jumpHeight);
+        }
+        
+        // Running
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            maxSpeed = 8f;
+        }
+        else
+        {
+            maxSpeed = 5f;
+        }
+        
+        // Reset
+        if (Input.GetKey(KeyCode.R))
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentSceneName);
         }
 
         // Camera follow
@@ -93,5 +114,15 @@ public class CharacterController2D : MonoBehaviour
 
         // Simple debug
         Debug.DrawLine(groundCheckPos, groundCheckPos - new Vector3(0, 0.23f, 0), isGrounded ? Color.green : Color.red);
+    }
+
+    private void OnTriggerEnter2D(Collider2D trigger)
+    {
+        sulcerchio = true;
+    }
+    
+    private void OnTriggerExit2D(Collider2D trigger)
+    {
+        sulcerchio = false;
     }
 }
