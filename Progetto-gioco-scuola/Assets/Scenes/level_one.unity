@@ -459,6 +459,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 939739431923285697, guid: 8b82915c0ab5a1b4780a31b248b099c7, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6013080404689048504, guid: 8b82915c0ab5a1b4780a31b248b099c7, type: 3}
       propertyPath: m_Name
       value: pavimento-1
